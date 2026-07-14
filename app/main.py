@@ -1,15 +1,13 @@
 from __future__ import annotations
 
 import argparse
-from pathlib import Path
-
 import os
-from fastapi import FastAPI, HTTPException
+import uvicorn
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 
-from .context_store import ContextStore
-from .model_service import ModelService, ModelConfig
-from .schemas import (
+from app.schemas import (
     ExplainRequest,
     ExplainResponse,
     GenerateRequest,
@@ -18,19 +16,21 @@ from .schemas import (
     ValidateRequest,
     ValidateResponse,
 )
-from .validator import JattiValidator
-from .rag import init_rag
-from contextlib import asynccontextmanager
+from app.services.generation_service import generation_service
+from app.core.config import settings
+from app.core.logger import get_logger
+from app.validator import JattiValidator
+
+logger = get_logger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    context = context_store.load()
-    init_rag(context)
+    logger.info("Starting Jatti Backend with provider: " + settings.llm_provider)
     yield
+    logger.info("Shutting down Jatti Backend")
 
-app = FastAPI(title="Jatti Local LLM Backend", version="0.1.0", lifespan=lifespan)
+app = FastAPI(title="Jatti Cloud RAG Backend", version="1.0.0", lifespan=lifespan)
 
-# Add CORS middleware to allow the VS Code extension to connect from anywhere
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -38,56 +38,55 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-context_store = ContextStore()
-validator = JattiValidator()
-model_service = ModelService(ModelConfig())
 
+validator = JattiValidator()
 
 @app.get("/health", response_model=HealthResponse)
 def health() -> HealthResponse:
-    return HealthResponse(status="ok", model_loaded=model_service.model_loaded, model_name=model_service.config.model_name)
-
+    return HealthResponse(
+        status="ok", 
+        model_loaded=True, 
+        model_name=settings.model_name
+    )
 
 @app.post("/api/generate", response_model=GenerateResponse)
-def generate(request: GenerateRequest) -> GenerateResponse:
-    try:
-        context = context_store.load()
-        code = model_service.generate(
-            request.prompt,
-            context,
-            extra_context=request.context,
-            max_new_tokens=request.max_tokens,
-            temperature=request.temperature,
-        )
-        return GenerateResponse(success=True, code=code)
-    except Exception as exc:
-        return GenerateResponse(success=False, error=str(exc))
-
+async def generate(request: GenerateRequest) -> GenerateResponse:
+    result = await generation_service.generate_code(
+        prompt=request.prompt,
+        context=request.context,
+        max_tokens=request.max_tokens,
+        temperature=request.temperature
+    )
+    if result["success"]:
+        return GenerateResponse(success=True, code=result["code"])
+    else:
+        return GenerateResponse(success=False, error=result["error"])
 
 @app.post("/api/validate", response_model=ValidateResponse)
 def validate(request: ValidateRequest) -> ValidateResponse:
     errors = validator.validate(request.code)
     return ValidateResponse(valid=not errors, errors=errors)
 
-
 @app.post("/api/explain", response_model=ExplainResponse)
-def explain(request: ExplainRequest) -> ExplainResponse:
-    return ExplainResponse(explanation=model_service.explain(request.code))
-
+async def explain(request: ExplainRequest) -> ExplainResponse:
+    result = await generation_service.generate_code(
+        prompt="Explain this Jatti code concisely.",
+        context=request.code,
+        max_tokens=300
+    )
+    return ExplainResponse(explanation=result["code"] if result["success"] else result["error"])
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Run Jatti local LLM backend")
+    parser = argparse.ArgumentParser(description="Run Jatti RAG backend")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=5000)
     parser.add_argument("--reload", action="store_true")
     args = parser.parse_args()
 
-    # For deployment, bind to 0.0.0.0 and use the PORT environment variable if available
     port = int(os.environ.get("PORT", args.port))
     host = "0.0.0.0" if os.environ.get("PORT") else args.host
 
     uvicorn.run("app.main:app", host=host, port=port, reload=args.reload)
-
 
 def cli() -> None:
     main()
