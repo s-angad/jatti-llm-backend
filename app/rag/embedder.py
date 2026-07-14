@@ -1,13 +1,19 @@
 from sentence_transformers import SentenceTransformer
 
 class Embedder:
-    def __init__(self, model_name: str = "all-MiniLM-L6-v2"):
-        self.model = SentenceTransformer(model_name)
-    
-    def embed_text(self, text: str) -> list[float]:
+    def __init__(self):
+        self.model = None
+
+    def _load(self):
+        if self.model is None:
+            self.model = SentenceTransformer("all-MiniLM-L6-v2")
+
+    def embed_text(self, text):
+        self._load()
         return self.model.encode(text).tolist()
-    
-    def embed_batch(self, texts: list[str]) -> list[list[float]]:
+
+    def embed_batch(self, texts):
+        self._load()
         return self.model.encode(texts).tolist()
 
 embedder = Embedder()

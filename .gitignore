@@ -18,6 +18,5 @@ Thumbs.db
 .idea/
 
 # Large model files (if any are downloaded locally)
-*.bin
 *.pt
 *.safetensors
