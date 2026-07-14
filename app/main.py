@@ -41,14 +41,14 @@ app.add_middleware(
 
 validator = JattiValidator()
 
-@app.get("/health", response_model=HealthResponse)
-def health() -> HealthResponse:
-    return HealthResponse(
-        status="ok", 
-        model_loaded=True, 
-        model_name=settings.model_name,
-        groq_key=bool(os.getenv("GROQ_API_KEY"))
-    )
+@app.get("/health")
+def health():
+    return {
+        "status": "ok",
+        "model": settings.model_name,
+        "groq_key": bool(os.getenv("GROQ_API_KEY")),
+        "settings_key": bool(settings.groq_api_key),
+    }
 
 @app.post("/api/generate", response_model=GenerateResponse)
 async def generate(request: GenerateRequest) -> GenerateResponse:
