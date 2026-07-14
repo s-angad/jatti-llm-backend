@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: jatti-llm-backend
+    env: python
+    region: oregon
+    buildCommand: "pip install -r requirements.txt && python scripts/build_faiss.py"
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: GROQ_API_KEY
+        sync: false
+      - key: MODEL_NAME
+        value: llama-3.1-8b-instant
+      - key: TEMPERATURE
+        value: "0.2"
+      - key: MAX_NEW_TOKENS
+        value: "512"
+      - key: TOP_K
+        value: "5"
+      - key: EMBEDDING_MODEL
+        value: BAAI/bge-small-en-v1.5
