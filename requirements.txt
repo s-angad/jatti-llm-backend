@@ -1,0 +1,9 @@
+fastapi>=0.110
+uvicorn[standard]>=0.27
+pydantic>=2.6
+transformers>=4.44
+torch>=2.2
+accelerate>=0.33
+bitsandbytes>=0.43 ; platform_system != "Windows"
+sentence-transformers>=3.0.1
+scikit-learn>=1.5.1

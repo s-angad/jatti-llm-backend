@@ -1,0 +1,5 @@
+{"input":"sun_we\n    chilla_we \"ok\"\nja_we","expected":"valid","notes":"basic program"}
+{"input":"sun_we\n    chal_oye x ban 10\n    chilla_we x\nja_we","expected":"valid","notes":"assignment and print"}
+{"input":"sun_we\n    je sach\n        chilla_we \"yes\"","expected":"invalid","notes":"missing closing ja_we"}
+{"input":"sun_we\n   chilla_we \"bad indent\"\nja_we","expected":"invalid","notes":"indentation must be 4 spaces"}
+{"input":"sun_we\n    kaam add(a, b)\n        wapas_kar a + b\nja_we","expected":"valid","notes":"function definition"}
