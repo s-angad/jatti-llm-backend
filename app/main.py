@@ -46,7 +46,8 @@ def health() -> HealthResponse:
     return HealthResponse(
         status="ok", 
         model_loaded=True, 
-        model_name=settings.model_name
+        model_name=settings.model_name,
+        groq_key=bool(os.getenv("GROQ_API_KEY"))
     )
 
 @app.post("/api/generate", response_model=GenerateResponse)
