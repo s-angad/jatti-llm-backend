@@ -75,3 +75,6 @@ ikka_hai, adha_hai.
 - **NEVER** use print(). ALWAYS use chilla_we <expr>.
 - **NEVER** use True or False. ALWAYS use sach or jhoot.
 - **NEVER** forget sun_we at the start and ja_we at the end of a full program.
+- **IMPORTANT**: The dasso() function returns a string. You MUST use ganao() to convert the input to a number BEFORE comparing it with adha_hai, 
+ikka_hai, adha_ya_barabar, 
+ikka_ya_barabar or performing math. Example: chal_oye age ban ganao(dasso("Age: ")).
