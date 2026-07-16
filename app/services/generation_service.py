@@ -1,6 +1,5 @@
 from app.rag.retriever import retriever
 from app.prompts.builder import build_prompt
-from app.memory.context_manager import context_manager
 from app.llm.groq_provider import GroqProvider
 from app.core.config import settings
 from app.validator import JattiValidator # using old validator for now
@@ -13,20 +12,33 @@ class GenerationService:
         self.provider = GroqProvider()
         self.validator = JattiValidator()
         
-    async def generate_code(self, prompt: str, context: str = "", max_tokens: int = 500, temperature: float = 0.2) -> dict:
+    async def generate_code(self, prompt: str, context: str = "", history: list = None, max_tokens: int = 500, temperature: float = 0.2) -> dict:
+        if history is None:
+            history = []
         try:
             # 1. Retrieve
             retrieved_docs = retriever.retrieve(prompt)
             
             # 2. Build Prompt
-            full_prompt = build_prompt(prompt, retrieved_docs)
+            system_msg, user_msg = build_prompt(prompt, retrieved_docs)
             
             if context:
-                full_prompt += f"\nUser Context:\n{context}\n"
+                user_msg += f"\nUser Context:\n{context}\n"
+                
+            messages = [{"role": "system", "content": system_msg}]
+            # Inject history
+            for turn in history:
+                if "user" in turn and "assistant" in turn:
+                    messages.append({"role": "user", "content": turn["user"]})
+                    messages.append({"role": "assistant", "content": turn["assistant"]})
+                elif "role" in turn and "content" in turn:
+                    messages.append({"role": turn["role"], "content": turn["content"]})
+                    
+            messages.append({"role": "user", "content": user_msg})
                 
             # 3. Generate
             logger.info(f"Generating code with {self.provider.__class__.__name__}")
-            generated_code = await self.provider.generate(full_prompt, max_tokens, temperature)
+            generated_code = await self.provider.generate(messages, max_tokens, temperature)
             
             # 4. Clean, Format, and Validate
             clean_code = generated_code.replace("```jatti", "").replace("```", "").strip()
@@ -69,8 +81,7 @@ class GenerationService:
             
             validation_errors = self.validator.validate(clean_code)
             
-            # 5. Update Memory
-            context_manager.add_interaction(prompt, clean_code)
+            validation_errors = self.validator.validate(clean_code)
             
             return {
                 "success": True,

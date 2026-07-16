@@ -10,18 +10,13 @@ class GroqProvider(LLMProvider):
         self.client = AsyncGroq(api_key=settings.groq_api_key)
         self.model = settings.model_name
         
-    async def generate(self, prompt: str, max_tokens: int = settings.max_new_tokens, temperature: float = settings.temperature) -> str:
+    async def generate(self, messages: list, max_tokens: int = settings.max_new_tokens, temperature: float = settings.temperature) -> str:
         if not settings.groq_api_key:
             logger.warning("GROQ_API_KEY is not set. Generation will fail.")
             
         try:
             response = await self.client.chat.completions.create(
-                messages=[
-                    {
-                        "role": "user",
-                        "content": prompt,
-                    }
-                ],
+                messages=messages,
                 model=self.model,
                 temperature=temperature,
                 max_tokens=max_tokens,

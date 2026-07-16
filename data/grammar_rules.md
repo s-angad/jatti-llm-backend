@@ -46,10 +46,21 @@
 - Dictionaries: `{ "name": "Singh" }`
 
 ## Built-ins and helpers
-- `range_banao`, `kinna_lamba`, `kism`, `likh`, `padh`, `ganao`
+- `range_banao`, `kinna_lamba`, `kism`, `likh`, `padh`, `dasso` (user input), `ganao`
 - `sab_ton_vaddha`, `sab_ton_chhota`
 - `sorted`, `reversed`
 - `vada_likha`, `chhota_likha`, `saf_karo`, `vand_karo`, `badal_de`, `shuru_hunda`, `khatam_hunda`, `dhundh_ja`
 
 ## Best output rule
 - If a user asks for code, return a complete valid Jatti program unless they explicitly ask for a snippet
+
+## ANTI-HALLUCINATION & STRICT SYNTAX (CRITICAL)
+- **DO NOT** use Python or JavaScript keywords.
+- **NEVER** use `=` for assignment. ALWAYS use `chal_oye <name> ban <expr>`.
+- **NEVER** use `def` or `function`. ALWAYS use `kaam <name>(<params>)`.
+- **NEVER** use `if`, `elif`, `else`. ALWAYS use `je`, `nahin_taan_je`, `nahin_taan`.
+- **NEVER** use `while` or `for`. ALWAYS use `jadon_tak` and `har_ek`.
+- **NEVER** use `==`, `<`, `>`. ALWAYS use `barabar`, `nikka_hai`, `vadha_hai`.
+- **NEVER** use `print()`. ALWAYS use `chilla_we <expr>`.
+- **NEVER** use `True` or `False`. ALWAYS use `sach` or `jhoot`.
+- **NEVER** forget `sun_we` at the start and `ja_we` at the end of a full program.

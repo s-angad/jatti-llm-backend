@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field
 class GenerateRequest(BaseModel):
     prompt: str = Field(..., min_length=1)
     context: str = ""
+    history: List[dict] = Field(default_factory=list)
     max_tokens: int = 1000
     temperature: float = 0.2
 

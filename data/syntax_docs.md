@@ -177,6 +177,7 @@ ja_we
 sun_we
     likh("output.txt", "Hello from Jatti!")
     chal_oye content ban padh("output.txt")
+    chal_oye user_input ban dasso("Enter text: ")
     chilla_we content
 ja_we
 ```

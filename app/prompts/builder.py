@@ -11,18 +11,21 @@ CRITICAL RULES:
 5. Keep the code as simple and direct as possible. Do not overcomplicate simple requests with unnecessary variables.
 6. Output ONLY the raw code. Do not include extra explanations or pleasantries."""
 
-def build_prompt(user_query: str, retrieved_docs: list[str]) -> str:
-    prompt = SYSTEM_PROMPT + "\n\n"
+def build_prompt(user_query: str, retrieved_docs: list[str]) -> tuple[str, str]:
+    system = SYSTEM_PROMPT + "\n\n"
     
     if retrieved_docs:
-        prompt += "Language Documentation and Examples:\n"
+        system += "Language Documentation and Examples:\n"
         for doc in retrieved_docs:
-            prompt += f"{doc}\n---\n"
+            system += f"{doc}\n---\n"
             
-    history = context_manager.get_context_string()
-    if history:
-        prompt += f"\n{history}\n"
+    # Always read the grammar rules directly to enforce strictness
+    try:
+        with open("data/grammar_rules.md", "r") as f:
+            grammar = f.read()
+            system += f"\n[Strict Grammar Rules - DO NOT VIOLATE]\n{grammar}\n"
+    except Exception:
+        pass
         
-    prompt += f"\nUser Request: {user_query}\n"
-    prompt += "Jatti Code:\n"
-    return prompt
+    user = f"User Request: {user_query}\nJatti Code:\n"
+    return system, user

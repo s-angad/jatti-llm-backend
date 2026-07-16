@@ -55,6 +55,7 @@ async def generate(request: GenerateRequest) -> GenerateResponse:
     result = await generation_service.generate_code(
         prompt=request.prompt,
         context=request.context,
+        history=request.history,
         max_tokens=request.max_tokens,
         temperature=request.temperature
     )
