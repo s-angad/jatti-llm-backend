@@ -66,3 +66,6 @@
 - **NEVER** use `True` or `False`. ALWAYS use `sach` or `jhoot`.
 - **NEVER** forget `sun_we` at the start and `ja_we` at the end of a full program.
 - **IMPORTANT**: The `dasso()` function returns a string. You MUST use `number()` to convert the input to a number BEFORE comparing it with `vadha_hai`, `nikka_hai`, `vadha_ya_barabar`, `nikka_ya_barabar` or performing math. Example: `chal_oye age ban number(dasso("Age: "))`.
+
+- **NEVER** use `ja_we` to close loops (`har_ek`, `jadon_tak`), functions (`kaam`), or if-blocks (`je`). Blocks are closed PURELY by reducing the indentation level! `ja_we` is ONLY used exactly ONCE at the very end of the program.
+- **ALWAYS** spell `dasso` with double s. NEVER write `daso`. AND ALWAYS pass a string argument to it (e.g., `dasso("Enter name: ")`).
