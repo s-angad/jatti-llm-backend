@@ -4,7 +4,7 @@ class Settings(BaseSettings):
     hf_token: str = ""
     groq_api_key: str = ""
     llm_provider: str = "groq"
-    model_name: str = "llama3-70b-8192"
+    model_name: str = "qwen-2.5-32b"
     temperature: float = 0.2
     max_new_tokens: int = 512
     top_k: int = 5
