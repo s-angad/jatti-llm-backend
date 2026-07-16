@@ -46,36 +46,24 @@ class GenerationService:
             # Auto-formatter for Jatti indentation rules
             lines = clean_code.splitlines()
             formatted_lines = []
-            inside_main = False
+            current_indent = 0
+            
+            block_openers = ("sun_we", "je ", "nahin_taan_je ", "nahin_taan", "jadon_tak ", "har_ek ", "kaam ", "chal_koshish_karle", "pakad ")
+            
             for line in lines:
                 stripped = line.strip()
                 if not stripped:
                     continue
                     
-                if stripped.startswith("sun_we"):
-                    formatted_lines.append(stripped)
-                    inside_main = True
-                elif stripped.startswith("ja_we"):
-                    formatted_lines.append(stripped)
-                    inside_main = False
-                elif inside_main:
-                    # Enforce that it's indented by AT LEAST 4 spaces
-                    # We look at the original indent relative to the stripped line
-                    original_indent = len(line) - len(line.lstrip())
-                    # If the LLM forgot to indent the main block, we shift it by 4
-                    if original_indent == 0:
-                        formatted_lines.append("    " + stripped)
-                    else:
-                        # Ensure it's a multiple of 4
-                        adjusted_indent = ((original_indent + 3) // 4) * 4
-                        # Ensure minimum 4 spaces inside sun_we
-                        adjusted_indent = max(4, adjusted_indent)
-                        formatted_lines.append(" " * adjusted_indent + stripped)
-                else:
-                    # Outside main (like imports or function defs if any)
-                    original_indent = len(line) - len(line.lstrip())
-                    adjusted_indent = ((original_indent + 3) // 4) * 4
-                    formatted_lines.append(" " * adjusted_indent + stripped)
+                if stripped.startswith("ja_we"):
+                    current_indent = max(0, current_indent - 4)
+                    formatted_lines.append((" " * current_indent) + stripped)
+                    continue
+                    
+                formatted_lines.append((" " * current_indent) + stripped)
+                
+                if stripped.startswith(block_openers):
+                    current_indent += 4
                     
             clean_code = "\n".join(formatted_lines)
             
