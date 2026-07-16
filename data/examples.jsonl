@@ -23,7 +23,7 @@
 {"prompt": "Nested loops example", "code": "sun_we\n    har_ek i range_banao(1, 4)\n        har_ek j range_banao(1, 4)\n            chilla_we i * j\nja_we"}
 {"prompt": "Check prime number", "code": "sun_we\n    kaam is_prime(n)\n        je n < 2\n            wapas_kar jhoot\n        har_ek i range_banao(2, n)\n            je n % i barabar 0\n                wapas_kar jhoot\n        wapas_kar sach\n\n    chilla_we is_prime(7)\nja_we"}
 {"prompt": "Calculate Fibonacci sequence", "code": "sun_we\n    kaam fibonacci(n)\n        je n barabar 0\n            wapas_kar 0\n        je n barabar 1\n            wapas_kar 1\n        nahin_taan\n            wapas_kar fibonacci(n - 1) + fibonacci(n - 2)\n\n    har_ek i range_banao(0, 10)\n        chilla_we fibonacci(i)\nja_we"}
-{"prompt": "Use try-except for error handling", "code": "sun_we\n    chal_koshish_karle\n        chilla_we 10 / 0\n    pakad err\n        chilla_we \"Error occurred: \" + err\nja_we"}
+{"prompt": "Use try-except for error handling", "code": "sun_we\n    chal_koshish_karle\n        chilla_we 10 / 0\n    pakad err\n        chilla_we \"Error occurred: \" + string(err)\nja_we"}
 {"prompt": "Read from a file and print content", "code": "sun_we\n    chal_oye content ban padh(\"input.txt\")\n    chilla_we content\nja_we"}
 {"prompt": "Write to a file and confirm", "code": "sun_we\n    likh(\"output.txt\", \"This is a test.\")\n    chilla_we \"File written successfully.\"\nja_we"}
 {"prompt": "Create a list of numbers and print them", "code": "sun_we\n    chal_oye numbers ban [1, 2, 3, 4, 5]\n    har_ek num numbers\n        chilla_we num\nja_we"}

@@ -69,3 +69,6 @@
 
 - **NEVER** use `ja_we` to close loops (`har_ek`, `jadon_tak`), functions (`kaam`), or if-blocks (`je`). Blocks are closed PURELY by reducing the indentation level! `ja_we` is ONLY used exactly ONCE at the very end of the program.
 - **ALWAYS** spell `dasso` with double s. NEVER write `daso`. AND ALWAYS pass a string argument to it (e.g., `dasso("Enter name: ")`).
+- **NEVER** concatenate strings and numbers directly (e.g. `"Age: " + 25`). This will crash. ALWAYS wrap numbers, booleans, and nulls in the `string()` built-in before concatenating (e.g. `"Age: " + string(age)`).
+- **NEVER** use Object-Oriented methods (e.g. `.append()`, `.push()`, `.length()`, `p.name`). Jatti does not support dot-notation! For lists, assign them entirely new values or iterate over them. For length, use `kinna_lamba(list)`. For properties, use dictionaries `p["name"]`.
+- **NEVER** mutate a string inline (e.g. `text[0] = "a"`). Strings are immutable.
